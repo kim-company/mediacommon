@@ -124,6 +124,16 @@ func findOpusChannelCount(descriptors []*astits.Descriptor) int {
 	return 0
 }
 
+func descriptorsByTag(descriptors []*astits.Descriptor, tag uint8) []*astits.Descriptor {
+	var ret []*astits.Descriptor
+	for _, sd := range descriptors {
+		if sd.Tag == tag {
+			ret = append(ret, sd)
+		}
+	}
+	return ret
+}
+
 func findCodec(dem *robustDemuxer, es *astits.PMTElementaryStream) (Codec, error) {
 	switch es.StreamType {
 	case astits.StreamTypeH265Video:
@@ -166,6 +176,12 @@ func findCodec(dem *robustDemuxer, es *astits.PMTElementaryStream) (Codec, error
 		}, nil
 
 	case astits.StreamTypePrivateData:
+		if teletextDescriptors := descriptorsByTag(es.ElementaryStreamDescriptors, astits.DescriptorTagTeletext); len(teletextDescriptors) > 0 {
+			return &CodecDVBTeletext{
+				Descriptors: cloneDescriptors(teletextDescriptors),
+			}, nil
+		}
+
 		if id, ok := findRegistrationIdentifier(es.ElementaryStreamDescriptors); ok {
 			switch id {
 			case opusIdentifier:

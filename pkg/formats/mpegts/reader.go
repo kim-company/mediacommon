@@ -47,6 +47,9 @@ type ReaderOnDataKLVFunc func(pts int64, data []byte) error
 // ReaderOnDataDVBSubtitleFunc is the prototype of the callback passed to OnDataDVBSubtitle.
 type ReaderOnDataDVBSubtitleFunc func(pts int64, data []byte) error
 
+// ReaderOnDataDVBTeletextFunc is the prototype of the callback passed to OnDataDVBTeletext.
+type ReaderOnDataDVBTeletextFunc func(pts int64, data []byte) error
+
 func findPMT(dem *robustDemuxer) (*astits.PMTData, error) {
 	for {
 		data, err := dem.nextData()
@@ -172,14 +175,15 @@ func writeMetadataAUWrapper(in []byte) ([]byte, error) {
 type Reader struct {
 	R io.Reader
 
-	tracks          []*Track
-	tracksByPID     map[uint16]*Track
-	preDem          *preDemuxer
-	dem             *robustDemuxer
-	onDecodeError   ReaderOnDecodeErrorFunc
-	onData          map[uint16]func(int64, int64, []byte) error
-	lastPTSReceived bool
-	lastPTS         int64
+	tracks            []*Track
+	tracksByPID       map[uint16]*Track
+	preDem            *preDemuxer
+	dem               *robustDemuxer
+	onDecodeError     ReaderOnDecodeErrorFunc
+	onData            map[uint16]func(int64, int64, []byte) error
+	onDataDVBTeletext map[uint16]ReaderOnDataDVBTeletextFunc
+	lastPTSReceived   bool
+	lastPTS           int64
 }
 
 // Initialize initializes a Reader.
@@ -224,6 +228,7 @@ func (r *Reader) Initialize() error {
 
 	r.onDecodeError = func(_ error) {}
 	r.onData = make(map[uint16]func(int64, int64, []byte) error)
+	r.onDataDVBTeletext = make(map[uint16]ReaderOnDataDVBTeletextFunc)
 
 	return nil
 }
@@ -455,6 +460,11 @@ func (r *Reader) OnDataDVBSubtitle(track *Track, cb ReaderOnDataDVBSubtitleFunc)
 	}
 }
 
+// OnDataDVBTeletext sets a callback that is called when data from a DVB Teletext track is received.
+func (r *Reader) OnDataDVBTeletext(track *Track, cb ReaderOnDataDVBTeletextFunc) {
+	r.onDataDVBTeletext[track.PID] = cb
+}
+
 // Read reads data.
 func (r *Reader) Read() error {
 	data, err := r.dem.nextData()
@@ -469,6 +479,25 @@ func (r *Reader) Read() error {
 	track, ok := r.tracksByPID[data.PID]
 	if !ok {
 		r.onDecodeError(fmt.Errorf("received data from undeclared track with PID %d", data.PID))
+		return nil
+	}
+
+	if _, isTeletext := track.Codec.(*CodecDVBTeletext); isTeletext {
+		pts := int64(-1)
+		if data.PES.Header.OptionalHeader != nil &&
+			data.PES.Header.OptionalHeader.PTSDTSIndicator != astits.PTSDTSIndicatorNoPTSOrDTS &&
+			data.PES.Header.OptionalHeader.PTSDTSIndicator != astits.PTSDTSIndicatorIsForbidden {
+			pts = data.PES.Header.OptionalHeader.PTS.Base
+			r.lastPTS = pts
+			r.lastPTSReceived = true
+		}
+
+		if cb, okTeletext := r.onDataDVBTeletext[data.PID]; okTeletext && len(data.PES.Data) > 0 {
+			if err := cb(pts, data.PES.Data); err != nil {
+				return err
+			}
+		}
+
 		return nil
 	}
 

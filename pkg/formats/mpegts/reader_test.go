@@ -1167,6 +1167,14 @@ func TestReader(t *testing.T) {
 					return nil
 				})
 
+			case *CodecDVBTeletext:
+				r.OnDataDVBTeletext(ca.track, func(pts int64, data []byte) error {
+					require.Equal(t, ca.samples[i].pts, pts)
+					require.Equal(t, ca.samples[i].data[0], data)
+					i++
+					return nil
+				})
+
 			default:
 				panic("unexpected")
 			}

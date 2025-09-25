@@ -72,9 +72,12 @@ func (w *Writer) Initialize() error {
 			track.PID = w.nextPID
 			w.nextPID++
 		}
-		es, _ := track.marshal()
+		es, err := track.marshal()
+		if err != nil {
+			return err
+		}
 
-		err := w.mux.AddElementaryStream(*es)
+		err = w.mux.AddElementaryStream(*es)
 		if err != nil {
 			return err
 		}
@@ -312,6 +315,22 @@ func (w *Writer) WriteDVBSubtitle(
 	return w.writeData(track, true, pts, streamIDPrivate, data)
 }
 
+// WriteDVBTeletext writes DVB Teletext PES payloads.
+// pts can be negative when the source PES does not include a presentation timestamp.
+func (w *Writer) WriteDVBTeletext(
+	track *Track,
+	pts int64,
+	data []byte,
+) error {
+	hasPTS := pts >= 0
+	var basePTS int64
+	if hasPTS {
+		basePTS = pts
+	}
+
+	return w.writeData(track, hasPTS, basePTS, streamIDPrivate, data)
+}
+
 func (w *Writer) writeVideo(
 	track *Track,
 	pts int64,
@@ -416,11 +435,9 @@ func (w *Writer) writeData(track *Track, hasPTS bool, pts int64, streamID uint8,
 		w.mux.SetPCRPID(track.PID)
 	}
 
-	af := &astits.PacketAdaptationField{
-		RandomAccessIndicator: true,
-	}
+	af := &astits.PacketAdaptationField{RandomAccessIndicator: true}
 
-	if track.isLeading {
+	if track.isLeading && hasPTS {
 		if w.pcrCounter == 0 {
 			af.HasPCR = true
 			af.PCR = &astits.ClockReference{Base: pts - dtsPCRDiff}

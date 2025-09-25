@@ -1,4 +1,4 @@
-module github.com/bluenviron/mediacommon/v2
+module github.com/kim-company/mediacommon
 
 go 1.24.0
 

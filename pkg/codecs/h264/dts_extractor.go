@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"fmt"
 
-	"github.com/bluenviron/mediacommon/v2/pkg/bits"
+	"github.com/kim-company/mediacommon/pkg/bits"
 )
 
 const (

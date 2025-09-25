@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/mpeg4audio"
+	"github.com/kim-company/mediacommon/pkg/codecs/mpeg4audio"
 )
 
 func TestTrackUnmarshalExternal(t *testing.T) {

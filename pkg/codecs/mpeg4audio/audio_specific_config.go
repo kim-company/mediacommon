@@ -3,7 +3,7 @@ package mpeg4audio
 import (
 	"fmt"
 
-	"github.com/bluenviron/mediacommon/v2/pkg/bits"
+	"github.com/kim-company/mediacommon/pkg/bits"
 )
 
 // Config is an alias for AudioSpecificConfig.

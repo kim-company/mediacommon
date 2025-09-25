@@ -1,9 +1,9 @@
 package fmp4
 
 import (
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/av1"
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/h264"
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/h265"
+	"github.com/kim-company/mediacommon/pkg/codecs/av1"
+	"github.com/kim-company/mediacommon/pkg/codecs/h264"
+	"github.com/kim-company/mediacommon/pkg/codecs/h265"
 )
 
 // PartSample is a fMP4 sample.

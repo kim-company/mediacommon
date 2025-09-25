@@ -3,8 +3,8 @@ package h265
 import (
 	"fmt"
 
-	"github.com/bluenviron/mediacommon/v2/pkg/bits"
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/h264"
+	"github.com/kim-company/mediacommon/pkg/bits"
+	"github.com/kim-company/mediacommon/pkg/codecs/h264"
 )
 
 // PPS is a H265 picture parameter set.

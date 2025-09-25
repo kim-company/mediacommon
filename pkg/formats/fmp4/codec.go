@@ -1,6 +1,6 @@
 package fmp4
 
-import "github.com/bluenviron/mediacommon/v2/pkg/formats/mp4"
+import "github.com/kim-company/mediacommon/pkg/formats/mp4"
 
 // Codec is a fMP4 codec.
 //

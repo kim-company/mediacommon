@@ -3,8 +3,8 @@ package pmp4
 import (
 	amp4 "github.com/abema/go-mp4"
 
-	imp4 "github.com/bluenviron/mediacommon/v2/internal/mp4"
-	"github.com/bluenviron/mediacommon/v2/pkg/formats/mp4"
+	imp4 "github.com/kim-company/mediacommon/internal/mp4"
+	"github.com/kim-company/mediacommon/pkg/formats/mp4"
 )
 
 const (

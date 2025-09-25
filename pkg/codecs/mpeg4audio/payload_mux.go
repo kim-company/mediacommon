@@ -1,7 +1,7 @@
 package mpeg4audio
 
 import (
-	"github.com/bluenviron/mediacommon/v2/pkg/bits"
+	"github.com/kim-company/mediacommon/pkg/bits"
 )
 
 // payloadMux is a PayloadMux.

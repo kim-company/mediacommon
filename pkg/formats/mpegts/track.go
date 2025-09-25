@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/asticode/go-astits"
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/ac3"
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/mpeg4audio"
+	"github.com/kim-company/mediacommon/pkg/codecs/ac3"
+	"github.com/kim-company/mediacommon/pkg/codecs/mpeg4audio"
 )
 
 func findMPEG4AudioConfig(dem *robustDemuxer, pid uint16) (*mpeg4audio.AudioSpecificConfig, error) {

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/h264"
+	"github.com/kim-company/mediacommon/pkg/codecs/h264"
 	"github.com/stretchr/testify/require"
 )
 

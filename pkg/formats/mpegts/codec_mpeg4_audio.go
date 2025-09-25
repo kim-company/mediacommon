@@ -3,7 +3,7 @@ package mpegts
 import (
 	"github.com/asticode/go-astits"
 
-	"github.com/bluenviron/mediacommon/v2/pkg/codecs/mpeg4audio"
+	"github.com/kim-company/mediacommon/pkg/codecs/mpeg4audio"
 )
 
 // CodecMPEG4Audio is a MPEG-4 Audio codec.

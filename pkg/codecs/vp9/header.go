@@ -3,7 +3,7 @@ package vp9
 import (
 	"fmt"
 
-	"github.com/bluenviron/mediacommon/v2/pkg/bits"
+	"github.com/kim-company/mediacommon/pkg/bits"
 )
 
 // Header_ColorConfig is the color_config member of an header.

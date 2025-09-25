@@ -3,7 +3,7 @@ package mpegts
 import (
 	"fmt"
 
-	"github.com/bluenviron/mediacommon/v2/pkg/bits"
+	"github.com/kim-company/mediacommon/pkg/bits"
 )
 
 func unmarshalPayloadSize(buf []byte, pos *int) (int, error) {
